@@ -1,0 +1,89 @@
+# Docker Version: 1.13.0
+# Docker Compose Version: 1.10.1
+#
+
+version: "3"
+
+services:
+    mn2:
+      image: happysorry/mncse2:0329
+      deploy:
+        replicas: 1
+        # placement:
+        #   constraints:
+        #     - node.hostname != happysorry-BM6660-BM6360
+        # resources:
+        #   limits:
+        #     cpus: '0.1'
+      environment:
+        remoteCSEIP: 140.116.247.73
+        outport: 777   
+      ports:
+        - "777:777"
+
+    mn1:
+      image: happysorry/mncse1:mn16_same
+      depends_on: 
+        - mn2
+        - mnae1
+        - mnae2
+      deploy:
+        replicas: 1
+        # placement:
+        #   constraints:
+        #     - node.hostname != happysorry-BM6660-BM6360
+        # resources:
+        #   limits:
+        #     cpus: '0.1'
+            
+            
+      environment:
+        remoteCSEIP: mn2
+        remotePort: 777
+        outport: 666
+        remoteCseId: mn-cse
+        remoteCseName: mn-name
+      ports:
+        - "666:666"
+    
+    mnae1:
+      image: happysorry/mnae11:0504
+      deploy:
+        replicas: 1
+        # placement:
+        #   constraints:
+        #     - node.hostname != happysorry-BM6660-BM6360
+        # resources:
+        #   limits:
+        #     cpus: '0.1'
+      environment:
+        IP: mn1
+      ports:
+        - "1111:1111"
+    
+    mnae2:
+      image: happysorry/mnae22:0503
+      deploy:
+        replicas: 1
+        # placement:
+        #   constraints:  
+        #     - node.hostname != happysorry-BM6660-BM6360
+        # resources:
+        #   limits:
+        #     cpus: '0.1'
+      environment:
+        IP: mn2
+      
+      ports:
+        - "2222:2222"
+
+    
+
+    # haproxy:
+    #     image: happysorry/haproxy:2
+    #     deploy:
+    #       placement:
+    #         constraints:
+    #           - node.hostname != haproxy
+    #     ports:
+    #         - "80:80"
