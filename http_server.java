@@ -47,11 +47,6 @@ public class http_server {
              * dealing with post request
              */
             if ("POST".equals(t.getRequestMethod())) {
-                String response = "This is the response";
-                t.sendResponseHeaders(200, response.length());
-                OutputStream os = t.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
                 System.out.println("POST");
                 do_post(result);
             }
@@ -61,7 +56,11 @@ public class http_server {
             if ("GET".equals(t.getRequestMethod())) {
                 System.out.println("GET");
             }
-
+            String response = "This is the response";
+            t.sendResponseHeaders(201, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         }
     }
 
